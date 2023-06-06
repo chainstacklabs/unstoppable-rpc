@@ -1,0 +1,18 @@
+[
+  {
+    "slug": "provider A",
+    "httpEndpoint": "https://ethereum-mainnet.core.chainstack.com/XXX",
+    "wsEndpoint": "wss://ethereum-mainnet.core.chainstack.com/ws/XXX",
+    "downAt": null,
+    "lat": "51.5085",
+    "lon": "-0.1257"
+  },
+  {
+    "slug": "provider B",
+    "httpEndpoint": "https://mainnet.infura.io/v3/XXX",
+    "wsEndpoint": "wss://mainnet.infura.io/ws/v3/XXX",
+    "downAt": null,
+    "lat": "35.4586",
+    "lon": "-119.3552"
+  }
+]

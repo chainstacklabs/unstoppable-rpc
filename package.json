@@ -1,0 +1,15 @@
+{
+  "name": "unstopabble-rpc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "wrangler dev"
+  },
+  "dependencies": {
+    "wrangler": "2.20.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20230518.0",
+    "typescript": "^5.1.3"
+  }
+}

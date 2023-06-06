@@ -1,0 +1,15 @@
+name = "unstopabble-rpc"
+main = "src/index.ts"
+compatibility_date = "2023-03-15"
+
+kv_namespaces = [
+    { binding = "CONFIG_KV", id = "b8e3236988b64e26809b7e9a40f11658", preview_id = "b8e3236988b64e26809b7e9a40f11658" },
+]
+
+# [triggers]
+# crons = ["* * * * *"]
+
+
+[vars]
+ALLOWED_CLIENT_IP = [] # ["0.0.0.0", ...]
+ALLOWED_ORIGINS = [] # ["/*Mozilla*/", "insomnia/2022.5.0"]
