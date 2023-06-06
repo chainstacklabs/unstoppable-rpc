@@ -1,51 +1,6 @@
-import {Config, Origin} from "./types";
-
 function handleOptionRequest(): Response {
     // @ts-ignore
     return new Response(null, {headers: {...corsHeaders}});
-}
-
-
-function doFailover(
-    failedOrigin: Origin,
-    config: Config,
-    requestLat: number | string | null,
-    requestLon: number | string | null,
-): Origin | null {
-    failedOrigin.setDown(Date.now());
-
-    return findNearestOrigin(config, requestLat, requestLon);
-}
-
-function findNearestOrigin(
-    config: Config,
-    requestLat: number | string | null,
-    requestLon: number | string | null,
-): Origin | null {
-    const aliveOrigins: Origin[] = config.origins.filter((i: Origin) => i.isAlive());
-    let closestDistance: number = Infinity;
-    let closestOrigin: Origin | null = null;
-    const lat: number = Number(requestLat);
-    const lon: number = Number(requestLon);
-
-    if (aliveOrigins.length === 0) {
-        return null;
-    } else if (aliveOrigins.length === 1) {
-        return aliveOrigins[0];
-    } else if (!lat || !lon) {
-        const choice: number = Math.floor(Math.random() * aliveOrigins.length);
-        closestOrigin = aliveOrigins[choice];
-    } else {
-        aliveOrigins.forEach((origin_: Origin): void => {
-            const distance: number = calculateDistance(origin_.lat, origin_.lon, lat, lon);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestOrigin = origin_;
-            }
-        });
-    }
-
-    return closestOrigin;
 }
 
 const corsHeaders: { [key: string]: string } = {
@@ -72,7 +27,10 @@ function degreesToRadians(degrees: number): number {
     return degrees * (Math.PI / 180);
 }
 
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+function calculateDistance(lat1: number | null, lon1: number | null, lat2: number, lon2: number): number {
+    if (!lat1 || !lon1) {
+        return 0;
+    }
     const R: number = 6371; // Radius of the earth in km
     const dLat: number = degreesToRadians(lat2 - lat1);
     const dLon: number = degreesToRadians(lon2 - lon1);
@@ -107,7 +65,6 @@ async function sha256(message: string): Promise<string> {
 }
 
 export {
-    findNearestOrigin,
     calculateDistance,
     getMethodNotAllowedResponse,
     getInternalServerErrorResponse,
@@ -115,7 +72,6 @@ export {
     getIpFromHeaders,
     getUserAgentFromHeaders,
     isWebsocketRequest,
-    doFailover,
     handleOptionRequest,
     sha256,
 };

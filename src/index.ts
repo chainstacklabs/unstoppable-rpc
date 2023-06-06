@@ -1,5 +1,5 @@
-import {loadConfig} from './config';
-import {Config, Env, RequestContext} from './types';
+import {Config, loadConfig} from './config';
+import {Env, RequestContext} from './types';
 import Middleware from "./middlewares/base";
 import AllowByClientIPMiddleware from "./middlewares/checkClientIP";
 import CheckClientOriginMiddleware from "./middlewares/checkUserAgent";

@@ -1,5 +1,5 @@
-import {loadConfig} from './config';
-import {Config, Env, Origin, CheckResult} from './types';
+import {Config, loadConfig} from './config';
+import {Env, Origin, CheckResult} from './types';
 
 
 export default {

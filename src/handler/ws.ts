@@ -1,5 +1,4 @@
-import {doFailover, findNearestOrigin} from "../utils";
-import {Origin, RequestContext} from "../types";
+import {RequestContext} from "../types";
 
 async function makeRequestToServer(url: URL, headers: Headers): Promise<Response> {
     // workers will not work with wss, only https
@@ -16,18 +15,18 @@ async function handleWsRequest(context: RequestContext): Promise<void> {
     // @ts-ignore
     const lon: string | null = request.cf?.longitude;
 
-    let origin: Origin | null = findNearestOrigin(config as any, lat, lon);
+    let origins = config.orderedOrigins(Number(lat), Number(lon));
 
-    while (origin && !context.response) {
+    for (let origin of origins) {
         try {
             const url: URL = new URL(origin.wsEndpoint);
             serverResponse = await makeRequestToServer(url, request.headers);
 
             if (serverResponse.status >= 500) {
                 console.error(`Failed to fetch ${origin.slug} exception, do failover`);
-                origin = doFailover(origin, context.config, lat, lon);
             } else {
                 context.response = serverResponse;
+                break;
             }
         } catch (e) {
             console.error(e);

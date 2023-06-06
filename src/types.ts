@@ -1,4 +1,5 @@
 import {WebSocket} from "@cloudflare/workers-types"
+import {Config} from "./config";
 
 type CheckResult = {
     slug: string;
@@ -15,7 +16,7 @@ class Origin {
     lat: number;
     lon: number;
     downAt: number | null;
-    lastCheckResult: CheckResult | null = null;
+    lastCheckResult: CheckResult;
 
     constructor(
         slug: string,
@@ -24,7 +25,7 @@ class Origin {
         downAt: number | null,
         lat: number,
         lon: number,
-        lastCheckResult: CheckResult | null = null,
+        lastCheckResult: CheckResult | null,
     ) {
         this.slug = slug;
         this.httpEndpoint = httpHostname;
@@ -32,7 +33,13 @@ class Origin {
         this.downAt = downAt;
         this.lat = lat;
         this.lon = lon;
-        this.lastCheckResult = lastCheckResult;
+        this.lastCheckResult = lastCheckResult || {
+            slug: slug,
+            success: true,
+            checkedAt: 0,
+            lag: 0,
+            responseTime: 0,
+        };
     }
 
     isAlive(): boolean {
@@ -82,13 +89,17 @@ type RequestContext = {
     ctx: ExecutionContext,
 }
 
-type Config = {
-    origins: Origin[]
+type Weights = {
+    failWeight: number,
+    distanceWeight: number,
+    latencyWeight: number,
+    lagWeight: number,
 }
 
 type EnvAllowedClientIP = Array<string>;
 type EnvAllowedOrigins = Array<string>;
 
 
-export type {Config, Env, RequestContext, CheckResult};
+export type {Env, RequestContext, CheckResult, Weights};
 export {Origin, MutableResponse};
+
