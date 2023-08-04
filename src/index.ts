@@ -20,7 +20,19 @@ export default {
         env: Env,
         ctx: ExecutionContext
     ): Promise<Response> {
-        let config: Config = await loadConfig(env);
+        let config: Config;
+
+        try {
+            config = await loadConfig(env);
+        } catch (e) {
+            console.log("Failed to initialize config", e);
+            return getInternalServerErrorResponse();
+        }
+
+        if (!config || !config.origins || config.origins.length === 0) {
+            console.log("Config is empty");
+            return getInternalServerErrorResponse();
+        }
 
         const requestContext: RequestContext = {
             request,
@@ -34,7 +46,12 @@ export default {
 
         for (middleware of middlewares) {
             if (middleware.shouldBeProcessed(requestContext)) {
-                await middleware.process(requestContext);
+                try {
+                    await middleware.process(requestContext);
+                } catch (e) {
+                    console.log(`Failed to process ${middleware.slug} middleware`, e);
+                    break;
+                }
             }
         }
 

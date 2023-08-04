@@ -48,6 +48,22 @@ yarn run wrangler kv:namespace create CONFIG_KV --preview
 yarn run wrangler kv:namespace create CONFIG_KV
 ```
 
+add config from console output into `wrangler.toml` file, example:
+
+* dev:
+```toml
+kv_namespaces = [
+    { binding = "CONFIG_KV", preview_id = "PREVIEW_ID" }
+]
+```
+
+* prod:
+```toml
+kv_namespaces = [
+    { binding = "CONFIG_KV", id = "ID" },
+]
+```
+
 2. Prepare node list data with your list of endpoints
 
 Example and structure could be found in [node-config-example.json](node-config-example.json)
@@ -62,7 +78,7 @@ Tips:
 * go to Cloudflare UI -> Workers KV page
 * select your created namespace
 * create new item(entry) into namespace
-    * key - `origin`
+    * key - `origins`
     * value - valid JSON as array, example could be found in [node-config-example.json](node-config-example.json).
 
 ### Develop
